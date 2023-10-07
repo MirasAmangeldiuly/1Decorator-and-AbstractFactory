@@ -2,65 +2,78 @@ package main
 
 import "fmt"
 
-type Burger interface {
-	GetDescription() string
-	GetCost() int
+type RestaurantFactory interface {
+	CreateFood() Food
+	CreateDrink() Drink
 }
 
-type PlainBurger struct{}
-
-func (pb PlainBurger) GetDescription() string {
-	return "Обычный бургер"
+type Food interface {
+	Eat()
 }
 
-func (pb PlainBurger) GetCost() int {
-	return 100
+type Drink interface {
+	Drink()
 }
 
-type BurgerDecorator interface {
-	GetDescription() string
-	GetCost() int
+type ItalianRestaurantFactory struct{}
+
+func (irf ItalianRestaurantFactory) CreateFood() Food {
+	return ItalianFood{}
 }
 
-type CheeseDecorator struct {
-	burger Burger
+func (irf ItalianRestaurantFactory) CreateDrink() Drink {
+	return ItalianDrink{}
 }
 
-func (cd CheeseDecorator) GetDescription() string {
-	return cd.burger.GetDescription() + ", с сыром"
+type JapaneseRestaurantFactory struct{}
+
+func (jrf JapaneseRestaurantFactory) CreateFood() Food {
+	return JapaneseFood{}
 }
 
-func (cd CheeseDecorator) GetCost() int {
-	return cd.burger.GetCost() + 20
+func (jrf JapaneseRestaurantFactory) CreateDrink() Drink {
+	return JapaneseDrink{}
 }
 
-type BaconDecorator struct {
-	burger Burger
+type ItalianFood struct{}
+
+func (ifd ItalianFood) Eat() {
+	fmt.Println("Итальянская еда")
 }
 
-func (bd BaconDecorator) GetDescription() string {
-	return bd.burger.GetDescription() + ", с беконом"
+type ItalianDrink struct{}
+
+func (idr ItalianDrink) Drink() {
+	fmt.Println("Итальянский напиток")
 }
 
-func (bd BaconDecorator) GetCost() int {
-	return bd.burger.GetCost() + 30
+type JapaneseFood struct{}
+
+func (jfd JapaneseFood) Eat() {
+	fmt.Println("Японская еда")
+}
+
+type JapaneseDrink struct{}
+
+func (jdr JapaneseDrink) Drink() {
+	fmt.Println("Японский напиток")
 }
 
 func main() {
 
-	burger := PlainBurger{}
-	fmt.Println("Описание:", burger.GetDescription())
-	fmt.Println("Цена:", burger.GetCost())
+	italianFactory := ItalianRestaurantFactory{}
+	italianFood := italianFactory.CreateFood()
+	italianDrink := italianFactory.CreateDrink()
 
-	burgerWithCheese := CheeseDecorator{burger}
-	fmt.Println("\nОписание:", burgerWithCheese.GetDescription())
-	fmt.Println("Цена:", burgerWithCheese.GetCost())
+	fmt.Println("Итальянский ресторан:")
+	italianFood.Eat()
+	italianDrink.Drink()
 
-	burgerWithBacon := BaconDecorator{burger}
-	fmt.Println("\nОписание:", burgerWithBacon.GetDescription())
-	fmt.Println("Цена:", burgerWithBacon.GetCost())
+	japaneseFactory := JapaneseRestaurantFactory{}
+	japaneseFood := japaneseFactory.CreateFood()
+	japaneseDrink := japaneseFactory.CreateDrink()
 
-	burgerWithCheeseAndBacon := BaconDecorator{burgerWithCheese}
-	fmt.Println("\nОписание:", burgerWithCheeseAndBacon.GetDescription())
-	fmt.Println("Цена:", burgerWithCheeseAndBacon.GetCost())
+	fmt.Println("\nЯпонский ресторан:")
+	japaneseFood.Eat()
+	japaneseDrink.Drink()
 }
